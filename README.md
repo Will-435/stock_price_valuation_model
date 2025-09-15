@@ -5,7 +5,7 @@ It predicts short-term stock **drift** (expected 1-day return) using a Random Fo
 
 ---
 
-## 📌 Project Highlights
+## Project Highlights
 
 - **End-to-end ML pipeline**
   - Data cleaning (duplicate removal, NaN handling, type conversion)
@@ -32,7 +32,7 @@ It predicts short-term stock **drift** (expected 1-day return) using a Random Fo
 
 ---
 
-## 🛠 Repository Structure
+## Repository Structure
 
 ```
 ├── data_cleaner.py      # Functions for NaN handling, duplicate removal, encoding
@@ -45,7 +45,7 @@ It predicts short-term stock **drift** (expected 1-day return) using a Random Fo
 
 ---
 
-## ⚙️ How It Works
+##  How It Works
 
 1. **Data import & cleaning**
    - Remove duplicates
@@ -78,7 +78,7 @@ It predicts short-term stock **drift** (expected 1-day return) using a Random Fo
 
 ---
 
-## 📊 Example Output
+## Example Output
 
 ```text
 Mean Absolute Error: 2.34
@@ -91,7 +91,7 @@ Stock is overvalued by $7.42 → Recommended action: SHORT
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.10+
@@ -117,7 +117,7 @@ python final.py
 
 ---
 
-## 📈 Applications
+## Applications
 
 - **Investment Banking (IBD)** → understand DCF valuation and compare with market prices  
 - **Risk** → volatility-based features, time-aware cross-validation, leakage prevention  
@@ -126,7 +126,7 @@ python final.py
 
 ---
 
-## 🔍 Limitations
+## Limitations
 
 - DCF parameters (WACC, margins, growth rates) are placeholders — not investment advice.  
 - Model currently predicts 1-day price levels; targeting returns directly would improve stationarity.  
@@ -134,7 +134,7 @@ python final.py
 
 ---
 
-## 📌 Next Steps
+## Next Steps
 
 - Train directly on **returns** instead of price levels  
 - Add separate model for **volatility forecasting**  
@@ -144,6 +144,6 @@ python final.py
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 This project is for **educational purposes only**.  
 It is **not financial advice** and should not be used for actual trading decisions.
