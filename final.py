@@ -45,13 +45,20 @@ assumptions = {
 # Run the DCf model with our paramaters 
 dcf_df, enterprise_value, equity_value, dcf_implied_price = dcf_model.calculate_dcf(revenues, ebitda_margins, **assumptions)
 
-if dcf_implied_price < price_tmr:
-    delta = price_tmr - dcf_implied_price
-    print(f'Stock is overvalued by ${delta}. Recomended action: SHORT.')
+command = ['./trade_logic_program', str(dcf_implied_price), str(price_tmr)]
 
-elif dcf_implied_price > price_tmr:
-    delta = dcf_implied_price - price_tmr
-    print(f'Stock is undervalued by ${delta}. Recomended action: LONG.')
+try:
+    # This runs the command and captures its output
+    result = subprocess.run(
+        command,
+        capture_output=True, # Capture what the C++ program prints
+        text=True,           # Decode the output as text
+        check=True           # Automatically check for errors
+    )
 
-else:
-    print(f'Stock is correctly priced. No recomended trading action.')
+    recommendation = result.stdout.strip()
+    
+    print(recommendation)
+
+except FileNotFoundError:
+    print("\nError: 'trade_logic_program' not found. Check path")
