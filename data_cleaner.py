@@ -8,6 +8,8 @@ Cleaning the data this way improves processing time by cutting out unnecessary w
 """
 def drop_duplicate_rows_cols(df):
 
+    # Siple utility function for cleaning void data
+
     # remove duplicated rows
     df_1 = df.drop_duplicates()
 
