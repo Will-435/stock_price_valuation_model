@@ -14,18 +14,18 @@ Look-ahead leakage is the single most common reason that backtested equity model
 
 ```
 stock_price_valuation_model/
-├── README.md
-├── requirements.txt
-├── data/
-│   └── apple_stock_data.csv      # example daily bars
-├── src/
-│   ├── data_cleaner.py           # dedup, NaN handling, encoding, date conversion
-│   ├── data_analysis.py          # feature engineering, RF tuning, train/test split
-│   ├── dcf_model.py              # DCF valuation
-│   └── main.py                   # pipeline entry point
-└── cpp/
-    ├── trade_logic_program.cpp   # decision rule source
-    └── trade_logic_program       # compiled binary (rebuild if needed)
++-- README.md
++-- requirements.txt
++-- data/
+|   +-- apple_stock_data.csv      # example daily bars
++-- src/
+|   +-- data_cleaner.py           # dedup, NaN handling, encoding, date conversion
+|   +-- data_analysis.py          # feature engineering, RF tuning, train/test split
+|   +-- dcf_model.py              # DCF valuation
+|   +-- main.py                   # pipeline entry point
++-- cpp/
+    +-- trade_logic_program.cpp   # decision rule source
+    +-- trade_logic_program       # compiled binary (rebuild if needed)
 ```
 
 ## Getting started

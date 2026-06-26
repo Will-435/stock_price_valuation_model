@@ -12,20 +12,25 @@ def calculate_dcf(revenues,
                   net_debt,
                   shares_outstanding):
     """
-    Calculate enterprise value and implied share price via a DCF model.
+    Run a discounted cash flow valuation to recover the implied share price.
+    Free cash flow to the firm is forecast for each year, a terminal value
+    captures the period beyond the forecast, both are discounted at the
+    weighted average cost of capital, and net debt is removed to reach equity.
 
-    Inputs:
-        revenues: iterable of forecast revenues.
-        ebitda_margins: iterable of forecast EBITDA margins.
-        tax_rate, d_a_percent_revenue, nwc_percent_revenue,
-        capex_percent_revenue: scalar assumption rates.
-        wacc: weighted average cost of capital.
-        terminal_growth_rate: perpetual growth rate beyond the forecast.
-        net_debt: total net debt (subtracted from enterprise value).
-        shares_outstanding: number of shares for the per-share price.
-    Outputs:
-        df: per-year DCF working dataframe.
-        enterprise_value, equity_value, implied_share_price: scalars.
+    INPUTS:
+        * revenues, an iterable of forecast revenues
+        * ebitda_margins, an iterable of forecast EBITDA margins
+        * tax_rate, d_a_percent_revenue, nwc_percent_revenue, capex_percent_revenue, scalar assumption rates
+        * wacc, the weighted average cost of capital
+        * terminal_growth_rate, the perpetual growth rate beyond the forecast
+        * net_debt, total net debt subtracted from enterprise value
+        * shares_outstanding, the share count used for the per share price
+
+    OUTPUTS:
+        * the per year working dataframe
+        * the enterprise value
+        * the equity value
+        * the implied share price
     """
     forecast_years = len(revenues)
 
