@@ -4,3 +4,10 @@ __pycache__/
 .DS_Store
 *.dSYM/
 *.dSYM.zip
+data
+visuals
+sp_venv
+data
+visuals
+visuals
+data/processed

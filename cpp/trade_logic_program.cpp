@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
     // The core logic
     if (dcf_implied_price < price_tmr) {
-        delta = price_tmr - dcf_implied_price - 90;
+        delta = price_tmr - dcf_implied_price;
         // Print the final result to the console (standard output)
         std::cout << "Stock is overvalued by $" << std::fixed << std::setprecision(2) << delta << ". Recommended action: SHORT.";
     } else if (dcf_implied_price > price_tmr) {
