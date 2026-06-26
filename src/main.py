@@ -59,7 +59,7 @@ def run_pipeline():
     command = [str(TRADE_LOGIC_BINARY), str(dcf_implied_price), str(price_tomorrow)]
 
     try:
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        result = subprocess.run(command, capture_output = True, text = True, check = True)
         print(result.stdout.strip())
     except FileNotFoundError:
         print("trade logic binary not found, build cpp/trade_logic_program.cpp first")

@@ -24,36 +24,35 @@ PARAM_DISTRIBUTIONS = {
 }
 
 
-def random_forest_tuning(train_x, train_y,
-                         n_splits=DEFAULT_CV_SPLITS,
-                         n_iter=DEFAULT_SEARCH_ITERATIONS,
-                         random_state=DEFAULT_RANDOM_STATE):
+def random_forest_tuning(train_x, train_y, n_splits = DEFAULT_CV_SPLITS, n_iter = DEFAULT_SEARCH_ITERATIONS, random_state = DEFAULT_RANDOM_STATE):
     """
-    Tune a Random Forest regressor with randomised hyperparameter search.
+    Tune a random forest regressor with a randomised hyperparameter search.
+    Cross validation uses a time series split so future data never leaks into
+    the training folds.
 
-    Inputs:
-        train_x, train_y: training features and target.
-        n_splits: number of TimeSeriesSplit folds.
-        n_iter: number of random parameter combinations to try.
-        random_state: seed for reproducibility.
-    Outputs:
-        best_estimator: fitted RandomForestRegressor with best parameters.
-        best_params: dict of best hyperparameters.
-        best_mae: best cross-validated mean absolute error.
-    Cross-validation uses TimeSeriesSplit to avoid look-ahead leakage.
+    INPUTS:
+        * train_x, train_y, the training features and target
+        * n_splits, the number of time series cross validation folds
+        * n_iter, the number of random parameter combinations to try
+        * random_state, the seed for reproducibility
+
+    OUTPUTS:
+        * the fitted best estimator
+        * the dictionary of best hyperparameters
+        * the best cross validated mean absolute error
     """
-    tscv = TimeSeriesSplit(n_splits=n_splits)
-    base = RandomForestRegressor(random_state=random_state, n_jobs=-1)
+    time_series_cv = TimeSeriesSplit(n_splits = n_splits)
+    base_estimator = RandomForestRegressor(random_state = random_state, n_jobs = -1)
 
     search = RandomizedSearchCV(
-        estimator=base,
-        param_distributions=PARAM_DISTRIBUTIONS,
-        n_iter=n_iter,
-        scoring="neg_mean_absolute_error",
-        cv=tscv,
-        n_jobs=-1,
-        verbose=1,
-        random_state=random_state,
+        estimator = base_estimator,
+        param_distributions = PARAM_DISTRIBUTIONS,
+        n_iter = n_iter,
+        scoring = "neg_mean_absolute_error",
+        cv = time_series_cv,
+        n_jobs = -1,
+        verbose = 1,
+        random_state = random_state,
     )
     search.fit(train_x, train_y)
 
@@ -61,7 +60,7 @@ def random_forest_tuning(train_x, train_y,
 
 
 def retrieve_train_test(df, features, target):
-    """Split a time-ordered dataframe into chronological train and test sets."""
+    """Split a time ordered dataframe into chronological train and test sets."""
     time_ordered_df = df.sort_values('date')
     split_index = int(len(time_ordered_df) * TRAIN_FRACTION)
 
@@ -72,7 +71,7 @@ def retrieve_train_test(df, features, target):
 
 
 def include_stock_analysis(df):
-    """Add lagged returns, rolling means, and rolling volatilities."""
+    """Add lagged returns, rolling means and rolling volatilities, all shifted to use past data only."""
     df = df.sort_values('date').copy()
 
     df["yday_return"] = df['close_price'].pct_change().shift(1)
@@ -90,15 +89,17 @@ def include_stock_analysis(df):
 
 def run_model(df, target):
     """
-    Train and evaluate the tuned Random Forest model.
+    Train and evaluate the tuned random forest, then predict the next day
+    price and the implied one day drift.
 
-    Inputs:
-        df: cleaned, feature-engineered dataframe.
-        target: name of the target column.
-    Outputs:
-        price_tomorrow: predicted next-day price.
-        drift_one_day: log return between today's price and the prediction.
-        out_of_sample_mae: mean absolute error on the held-out test set.
+    INPUTS:
+        * df, the cleaned and feature engineered dataframe
+        * target, the name of the target column
+
+    OUTPUTS:
+        * the predicted next day price
+        * the log return between today's price and the prediction
+        * the mean absolute error on the held out test set
     """
     features = [col for col in df.columns if col != target]
     feature_frame = df[features]
@@ -109,8 +110,8 @@ def run_model(df, target):
 
     final_model, _, _ = random_forest_tuning(
         train_x, train_y,
-        n_splits=DEFAULT_CV_SPLITS,
-        n_iter=TUNING_ITERATIONS,
+        n_splits = DEFAULT_CV_SPLITS,
+        n_iter = TUNING_ITERATIONS,
     )
     final_model.fit(train_x, train_y)
 

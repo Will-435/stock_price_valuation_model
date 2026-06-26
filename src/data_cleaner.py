@@ -15,25 +15,26 @@ def drop_duplicate_rows_cols(df):
 
 def nan_handling(df):
     """
-    Handle NaN values in a dataframe.
+    Handle missing values column by column so the model receives clean data.
+    String columns drop their NaN rows. Numeric columns drop their rows when
+    the NaN proportion is above the threshold, otherwise the gaps are filled
+    with the column median.
 
-    Inputs:
-        df: pandas DataFrame possibly containing NaN values.
-    Outputs:
-        df: pandas DataFrame with NaN values handled per column.
-    Operates per column: string columns drop NaN rows; numeric columns
-    drop rows when the NaN proportion exceeds NAN_DROP_THRESHOLD,
-    otherwise NaN values are imputed with the column median.
+    INPUTS:
+        * df, a dataframe possibly containing NaN values
+
+    OUTPUTS:
+        * the dataframe with missing values handled per column
     """
     for col in df.columns:
         nan_count = df[col].isna().sum()
         column_size = df[col].size
 
         if df[col].dtype == object or pd.api.types.is_string_dtype(df[col]):
-            df = df.dropna(subset=[col])
+            df = df.dropna(subset = [col])
         elif (pd.api.types.is_any_real_numeric_dtype(df[col])
               and nan_count > column_size * NAN_DROP_THRESHOLD):
-            df = df.dropna(subset=[col])
+            df = df.dropna(subset = [col])
         else:
             df[col] = df[col].fillna(df[col].median())
 
@@ -41,12 +42,12 @@ def nan_handling(df):
 
 
 def convert_dates_to_timestamp(df):
-    """Convert any string-formatted date column to its ordinal day count."""
+    """Convert any string formatted date column to its ordinal day count."""
     for col in df.columns:
         if df[col].dtype == object or pd.api.types.is_string_dtype(df[col]):
             try:
                 ordinal_days = (
-                    pd.to_datetime(df[col], format=DATE_FORMAT)
+                    pd.to_datetime(df[col], format = DATE_FORMAT)
                     .map(pd.Timestamp.toordinal)
                 )
                 df[col] = ordinal_days
@@ -58,15 +59,15 @@ def convert_dates_to_timestamp(df):
 
 def encode_strings(df):
     """
-    One-hot encode all genuine string columns in the dataframe.
+    One hot encode the genuine string columns so the model only sees numeric
+    inputs. Numeric values stored as strings are converted in place rather
+    than being encoded.
 
-    Inputs:
-        df: pandas DataFrame.
-    Outputs:
-        cleaned_df: dataframe with categorical columns replaced by
-        boolean indicator columns produced by OneHotEncoder.
-    Numeric columns stored as strings are converted to numeric in place
-    rather than being one-hot encoded.
+    INPUTS:
+        * df, a dataframe with a mix of numeric and string columns
+
+    OUTPUTS:
+        * the dataframe with categorical columns replaced by indicator columns
     """
     categorical_cols = []
 
@@ -79,12 +80,12 @@ def encode_strings(df):
 
     if categorical_cols:
         encoder = (
-            OneHotEncoder(sparse_output=False, handle_unknown='ignore')
-            .set_output(transform='pandas')
+            OneHotEncoder(sparse_output = False, handle_unknown = 'ignore')
+            .set_output(transform = 'pandas')
         )
         encoded = encoder.fit_transform(df[categorical_cols])
-        numeric_only = df.drop(columns=categorical_cols)
-        cleaned_df = pd.concat([numeric_only, encoded], axis=1)
+        numeric_only = df.drop(columns = categorical_cols)
+        cleaned_df = pd.concat([numeric_only, encoded], axis = 1)
     else:
         cleaned_df = df.copy()
 
